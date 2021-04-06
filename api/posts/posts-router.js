@@ -36,10 +36,6 @@ router.get('/:id', (req, res) => {
   })
 })
 
-const newUser = Post.insert({ title: "Me", contents: "two" })
-newUser.then(res => console.log(res))
-
-
 router.post('/', (req, res) => {
   if (!req.body.title || !req.body.contents) {
     res.status(400).json({
@@ -48,10 +44,12 @@ router.post('/', (req, res) => {
   } else {
     Post.insert(req.body)
       .then(newId => {
-        res.status(201).json(newId)
-        return(newId)
-    })
-    .then(newId => console.log("New ID is:", newId))
+        return(Post.findById(newId.id))
+      })
+      .then(post => {
+        console.log(post)
+        res.status(201).json(post)
+      })
     .catch(err => {
       console.log(err)
       res.status(500).json({ 
